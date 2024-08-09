@@ -1,0 +1,92 @@
+#Khushi Chauhan(0722268)
+#Program Description: 
+# This R script loads the necessary libraries, reads the Covid-19 World Vaccination Progress dataset,
+# and creates visualizations to analyze the vaccination progress for the top 7 countries.
+# The visualizations include a line plot of total vaccinations over time, a bar plot of average daily vaccinations,
+# and a pie chart representing the distribution of the top 5 vaccines and 'Other'.
+# The script aims to provide insights into the vaccination trends and popular vaccines used globally.
+
+#Refernces: https://www.kaggle.com/gpreda/covid-world-vaccination-progress
+#https://dplyr.tidyverse.org/reference/summarise.html
+#https://www.sfu.ca/~mjbrydon/tutorials/BAinR/filter.html
+#https://r-graph-gallery.com/136-stacked-area-chart.html
+#https://r-graph-gallery.com/piechart-ggplot2.html
+
+
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(scales)
+
+# Read the Covid-19 World Vaccination Progress dataset
+data <- read_csv("country_vaccinations.csv")
+
+# Get the top 7 countries based on total vaccinations
+top_countries <- data %>%
+  group_by(country) %>%
+  summarise(total_vaccinations = max(total_vaccinations, na.rm = TRUE)) %>%
+  arrange(desc(total_vaccinations)) %>%
+  head(7) %>%
+  select(country)
+
+# Filter the dataset for the top 7 countries
+data_top7 <- data %>%
+  filter(country %in% top_countries$country)
+
+# Visualization 1: Line Plot of Total Vaccinations Over Time for Top 7 Countries
+line_plot_top7_countries <- data_top7 %>%
+  ggplot(aes(x = date, y = total_vaccinations, color = country)) +
+  geom_line() +
+  labs(title = "Total Vaccinations Over Time (Top 7 Countries)",
+       x = "Date", y = "Total Vaccinations",
+       color = "Country") +
+  theme_minimal() +
+  theme(legend.position = "top") +  # Move legend to the top
+  scale_y_continuous(labels = scales::comma )
+                      # Format y-axis labels as millions
+show(line_plot_top7_countries)
+
+
+# Visualization 2: Bar Plot of Average Daily Vaccinations for Top 7 Countries
+bar_plot_avg_daily_vaccinations <- data_top7 %>%
+  group_by(country) %>%
+  summarise(avg_daily_vaccinations = mean(daily_vaccinations, na.rm = TRUE)) %>%
+  ggplot(aes(x = country, y = avg_daily_vaccinations, fill = country)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average Daily Vaccinations for Top 7 Countries",
+       x = "Country", y = "Average Daily Vaccinations") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")  +scale_y_continuous(labels = scales::comma )# Rotate x-axis labels
+show(bar_plot_avg_daily_vaccinations)
+
+
+#Visualization 3:pie chart for the top 5 vaccines and "Other"
+
+# Choose the top 5 vaccine types to display
+# Visualization 3: Pie Chart for the Top 5 Vaccines
+# Choose the top 5 vaccine types to display
+top_n_vaccines <- 5
+
+# Identify the top N vaccines
+top_vaccines <- data %>%
+  group_by(vaccines) %>%
+  summarise(total_vaccinations = sum(total_vaccinations, na.rm = TRUE)) %>%
+  top_n(top_n_vaccines, wt = total_vaccinations)
+
+# Filter the original data to include only the top 5 vaccines
+data_filtered <- data %>%
+  filter(vaccines %in% top_vaccines$vaccines)
+
+# Create a pie chart for the top 5 vaccines
+pie_chart_top_vaccines <- data_filtered %>%
+  ggplot(aes(x = "", y = total_vaccinations, fill = vaccines)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = paste("Top", top_n_vaccines, "Vaccines"),
+       fill = "Vaccine") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_y_continuous(labels = scales::comma_format(scale = 1e-6))
+show(pie_chart_top_vaccines)

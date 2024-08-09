@@ -1,0 +1,28 @@
+{
+    "id": "2A1042D8",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1701926191535.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "id": "c1b837e40c964c4c8bf2be5222089501",
+        "name": "line_plot_top7_countries",
+        "title": "line_plot_top7_countries",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 0,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1701926191535,
+    "read_only": false,
+    "read_only_alternatives": []
+}
