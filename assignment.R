@@ -1,4 +1,4 @@
-#Khushi Chauhan(0722268)
+
 #Program Description: 
 # This R script loads the necessary libraries, reads the Covid-19 World Vaccination Progress dataset,
 # and creates visualizations to analyze the vaccination progress for the top 7 countries.
